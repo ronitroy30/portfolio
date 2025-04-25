@@ -551,3 +551,41 @@ img {
 
 /* Continue with existing base CSS below */
 
+/* Centering Home Section */
+.home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  min-height: 100vh;
+}
+
+.home__img {
+  position: static;
+  margin-top: 2rem;
+}
+
+/* Enhanced About Section */
+.about__container {
+  background-color: #f7f9fc;
+  padding: 2rem;
+  border-radius: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.about__text {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--second-color);
+  padding: 1rem;
+}
+
+.about__img img {
+  width: 180px;
+  border-radius: 50%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
