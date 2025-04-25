@@ -551,21 +551,3 @@ img {
 
 /* Continue with existing base CSS below */
 
-/* Enhanced About Section */
-
-.about__container {
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-.about__text {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  color: var(--second-color);
-}
-
-
