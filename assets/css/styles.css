@@ -551,21 +551,6 @@ img {
 
 /* Continue with existing base CSS below */
 
-/* Centering Home Section */
-.home {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  text-align: center;
-  min-height: 100vh;
-}
-
-.home__img {
-  position: static;
-  margin-top: 2rem;
-}
-
 /* Enhanced About Section */
 
 .about__container {
