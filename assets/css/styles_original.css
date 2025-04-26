@@ -237,7 +237,10 @@ img {
 /* ===== ABOUT =====*/
 .about__container {
   row-gap: 2rem;
-  text-align: center;
+  text-align: left; /* Changed from center to left */
+  max-width: 800px; /* Added max-width */
+  margin: 0 auto; /* Center the container */
+  padding: 0 1rem; /* Add some padding */
 }
 .about__subtitle {
   margin-bottom: var(--mb-2);
@@ -249,7 +252,12 @@ img {
   width: 200px;
   border-radius: 0.5rem;
 }
-
+.about__text {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--second-color);
+  text-align: left; /* Ensure text is left-aligned */
+}
 /* ===== SKILLS =====*/
 .skills__container {
   row-gap: 2rem;
@@ -307,6 +315,19 @@ img {
 }
 
 /* ===== CONTACT =====*/
+.contact__container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.contact__form {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
 .contact__input {
   width: 100%;
   font-size: var(--normal-font-size);
@@ -315,15 +336,29 @@ img {
   border-radius: 0.5rem;
   border: 1.5px solid var(--second-color);
   outline: none;
-  margin-bottom: var(--mb-4);
 }
+
 .contact__button {
-  display: block;
+  display: inline-block;
+  background-color: var(--first-color);
+  color: #fff;
+  padding: 0.75rem 2.5rem;
+  font-weight: var(--font-semi);
+  border-radius: 0.5rem;
+  transition: 0.3s;
   border: none;
-  outline: none;
-  font-size: var(--normal-font-size);
   cursor: pointer;
-  margin-left: auto;
+  margin-top: 1rem;
+}
+
+.contact__button:hover {
+  box-shadow: 0px 10px 36px rgba(0, 0, 0, 0.15);
+}
+
+@media screen and (min-width: 768px) {
+  .contact__form {
+    padding-top: 2rem;
+  }
 }
 
 /* ===== FOOTER =====*/
