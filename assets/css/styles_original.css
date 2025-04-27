@@ -420,8 +420,74 @@ img {
     padding-top: 2rem;
   }
 }
+/* ===== FOOTER ===== */
+.footer {
+    background-color: var(--second-color);
+    color: #fff;
+    text-align: center;
+    padding: 4rem 0 2rem;
+}
 
-/* ===== FOOTER =====*/
+.footer__content {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.footer__title {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    font-weight: var(--font-semi);
+    line-height: 1.4;
+}
+
+.footer__button {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--first-color);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: var(--font-semi);
+    transition: all 0.3s ease;
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.footer__button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    background-color: hsl(var(--hue-color), 89%, 50%);
+}
+
+.footer__button i {
+    margin-right: 0.7rem;
+    font-size: 1.3rem;
+}
+
+.footer__legal {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 1.5rem;
+}
+
+.footer__copy {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.footer__credit {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    font-style: italic;
+}
+
+/* Dynamic year update */
+const yearSpan = document.getElementById('year');
+if (yearSpan) {
+    yearSpan.textContent = new Date().getFullYear();
+}
+/* ===== FOOTER 
 .footer {
   background-color: var(--second-color);
   color: #fff;
@@ -443,7 +509,7 @@ img {
 }
 .footer__copy {
   font-size: var(--smaller-font-size);
-}
+}=====*/
 
 /* ===== MEDIA QUERIES=====*/
 @media screen and (max-width: 320px) {
