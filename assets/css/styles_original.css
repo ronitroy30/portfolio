@@ -316,6 +316,66 @@ img {
 
 /* ===== CONTACT =====*/
 .contact__container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    text-align: center;
+}
+
+.contact__email-container {
+    background-color: #f9f9f9;
+    padding: 2rem;
+    border-radius: 0.8rem;
+    box-shadow: 0 4px 25px rgba(14, 36, 49, 0.1);
+    transition: all 0.3s ease;
+}
+
+.contact__email-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(14, 36, 49, 0.15);
+}
+
+.contact__invitation {
+    font-size: 1.1rem;
+    color: var(--second-color);
+    margin-bottom: 1.5rem;
+}
+
+.contact__email {
+    display: inline-flex;
+    align-items: center;
+    font-size: 1.2rem;
+    color: var(--first-color);
+    background-color: white;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: var(--font-semi);
+    border: 2px solid var(--first-color);
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+.contact__email:hover {
+    background-color: var(--first-color);
+    color: white;
+    transform: scale(1.05);
+}
+
+.contact__icon {
+    font-size: 1.5rem;
+    margin-right: 0.8rem;
+}
+
+.contact__response-time {
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
+}
+
+/* ===== CONTACT 
+
+.contact__container {
   max-width: 600px;
   margin: 0 auto;
   padding: 0 1rem;
@@ -353,7 +413,7 @@ img {
 
 .contact__button:hover {
   box-shadow: 0px 10px 36px rgba(0, 0, 0, 0.15);
-}
+}=====*/
 
 @media screen and (min-width: 768px) {
   .contact__form {
