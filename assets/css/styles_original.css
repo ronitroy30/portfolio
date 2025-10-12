@@ -53,9 +53,16 @@ img{max-width:100%;display:block;height:auto}
 .home__title{font-size:3rem;line-height:1.1;margin-bottom:1.25rem}
 .home__title-color{color:var(--first-color)}
 .home__cta{display:flex;gap:.75rem;flex-wrap:wrap}
-.home__social{display:flex;flex-direction:row;gap:.75rem;margin-top:.75rem}
-.home__social-icon{font-size:1.6rem;color:var(--second-color)}
-.home__social-icon:hover{color:var(--first-color)}
+.home__social {display: flex;justify-content: center; align-items: center;flex-direction: row; gap: 1rem; margin-top: 1rem;}
+.home__social-icon {
+  font-size: 1.8rem;
+  color: var(--second-color);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.home__social-icon:hover {
+  color: var(--first-color);
+  transform: scale(1.15);
+}
 .home__img{position:absolute;right:0;bottom:0;width:320px}
 .home__blob{fill:var(--first-color)}
 .home__blob-img{width:360px}
