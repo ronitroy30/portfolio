@@ -1,6 +1,11 @@
 
 /* ===== Base Theme ===== */
 :root{
+  /* Theme tokens can be overridden by JS for live themes */
+  --violet-1: 268;
+  --teal-1: 174;
+  --rose-1: 343;
+  --amber-1: 38;
   --header-height:3.5rem;
   --font-semi:600;
   --hue:224;
@@ -129,3 +134,74 @@ img{max-width:100%;display:block;height:auto}
 @media (max-width: 992px){
   .home__social{display:flex;flex-direction:row;gap:.75rem;margin-top:.75rem}
 }
+
+
+/* ===== Motion preferences ===== */
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important}
+}
+
+/* ===== Animations ===== */
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(14px)}
+  to{opacity:1; transform:translateY(0)}
+}
+@keyframes floatY{
+  0%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+  100%{transform:translateY(0)}
+}
+@keyframes glowPulse{
+  0%{box-shadow:0 0 0 rgba(0,0,0,0)}
+  50%{box-shadow:0 12px 30px rgba(0,0,0,.18)}
+  100%{box-shadow:0 0 0 rgba(0,0,0,0)}
+}
+
+/* Reveal on scroll */
+[data-animate]{opacity:0; transform:translateY(14px)}
+[data-animate].in-view{opacity:1; transform:none; animation:fadeUp .6s ease both}
+
+/* Floating decoration */
+.blob-float{animation:floatY 6s ease-in-out infinite}
+
+/* Fancy section title underline */
+.section-title span{position:relative; display:inline-block; padding-bottom:.25rem}
+.section-title span::after{
+  content:""; position:absolute; left:50%; transform:translateX(-50%);
+  bottom:-6px; width:120px; height:4px; border-radius:999px;
+  background: linear-gradient(90deg, var(--first-color), var(--first-color-600));
+}
+
+/* Project card hover micro-interactions */
+.project-card{will-change:transform}
+.project-card:hover{transform:translateY(-6px) scale(1.01);}
+.project-card:hover .btn--primary{animation:glowPulse 1s ease}
+
+/* Buttons: subtle press and focus ring */
+.button,.btn{transition:transform .15s ease, box-shadow .2s ease, background .2s ease}
+.button:active,.btn:active{transform:translateY(1px) scale(.99)}
+.button:focus-visible,.btn:focus-visible{outline:3px solid color-mix(in srgb, var(--first-color) 60%, white); outline-offset:2px}
+
+/* ===== Theme picker ===== */
+.nav__theme{position:relative; margin-left:.5rem}
+.theme__toggle{border:2px solid var(--first-color); background:transparent; padding:.35rem .7rem; border-radius:999px; cursor:pointer; font-weight:700; color:var(--second-color)}
+.theme__menu{position:absolute; top:calc(100% + .5rem); left:0; display:none; background:#fff; padding:.6rem; border-radius:12px; box-shadow:var(--shadow); gap:.5rem}
+.theme__menu.open{display:grid; grid-template-columns:repeat(5, 28px);}
+.swatch{width:28px; height:28px; border-radius:999px; border:2px solid #e5e7eb; cursor:pointer}
+.swatch[data-theme="blue"]{background: hsl(224, 89%, 60%)}
+.swatch[data-theme="violet"]{background: hsl(268, 89%, 62%)}
+.swatch[data-theme="teal"]{background: hsl(174, 65%, 45%)}
+.swatch[data-theme="rose"]{background: hsl(343, 82%, 58%)}
+.swatch[data-theme="amber"]{background: hsl(38, 92%, 52%)}
+
+/* Header glass tweak on scroll */
+.scrolled .l-header{background:rgba(255,255,255,.9); box-shadow:0 6px 18px rgba(0,0,0,.08)}
+
+/* Hero background gradient */
+.home{background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(99,102,241,0.06) 100%); border-bottom:1px solid #eef2ff}
+
+/* Alternate section background for interest (not skills) */
+.about.section, .projects.section, .contact.section{background:linear-gradient(180deg, #fff 0%, #fafbff 100%)}
+
+/* Keep skills simple: ensure no animated backgrounds */
+.skills.section{background:#fff}
