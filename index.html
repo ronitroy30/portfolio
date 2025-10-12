@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-theme="blue" lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -35,13 +35,27 @@
             <li class="nav__item"><a href="#contact" class="nav__link">Contact</a></li>
           </ul>
         </div>
+      
+        <div class="theme">
+          <button class="theme__toggle" id="theme-toggle" aria-label="Change theme" title="Change theme">
+            <i class="bx bx-palette" aria-hidden="true"></i>
+          </button>
+          <div class="theme__panel" id="theme-panel" role="menu" aria-hidden="true">
+            <button class="theme__option" data-theme="blue" role="menuitem">Blue</button>
+            <button class="theme__option" data-theme="purple" role="menuitem">Purple</button>
+            <button class="theme__option" data-theme="teal" role="menuitem">Teal</button>
+            <button class="theme__option" data-theme="sunset" role="menuitem">Sunset</button>
+            <button class="theme__option" data-theme="mono" role="menuitem">Mono</button>
+          </div>
+        </div>
       </nav>
+        
     </header>
 
     <main class="l-main">
       <!-- ===== HOME ===== -->
       <section class="home bd-grid" id="home">
-        <div class="home__data">
+        <div class="home__data reveal">
           <h1 class="home__title">
             Hi,<br />I'm <span class="home__title-color">Ronit Roy</span><br />
           </h1>
@@ -78,7 +92,7 @@
       </section>
 
       <!-- ===== ABOUT ===== -->
-      <section class="about section" id="about">
+      <section class="about section reveal" id="about">
         <h2 class="section-title">✨ About Me</h2>
         <div class="about__container bd-grid" style="justify-content:center;">
           <div>
@@ -93,7 +107,7 @@
       </section>
 
       <!-- ===== EXPERIENCE ===== -->
-      <section class="experience section" id="experience">
+      <section class="experience section reveal" id="experience">
         <h2 class="section-title">💼 Experience</h2>
         <div class="bd-grid">
           <article class="experience__item">
@@ -132,7 +146,7 @@
       </section>
 
       <!-- ===== PROJECTS (Interactive) ===== -->
-      <section class="projects section" id="projects">
+      <section class="projects section reveal" id="projects">
         <h2 class="section-title">🛠️ Projects</h2>
 
         <!-- Filter toolbar -->
@@ -219,7 +233,7 @@
       </section>
 
       <!-- ===== SKILLS (simple/static, no animations) ===== -->
-      <section class="skills section" id="skills">
+      <section class="skills section reveal" id="skills">
         <h2 class="section-title">💡 Skills</h2>
         <div class="skills__container bd-grid">
           <div class="skills__columns">
@@ -252,7 +266,7 @@
       </section>
 
       <!-- ===== EDUCATION ===== -->
-      <section class="education section" id="education">
+      <section class="education section reveal" id="education">
         <h2 class="section-title">🎓 Education</h2>
         <div class="bd-grid">
           <div class="education__item">
@@ -271,7 +285,7 @@
       </section>
 
       <!-- ===== CONTACT ===== -->
-      <section class="contact section" id="contact">
+      <section class="contact section reveal" id="contact">
         <h2 class="section-title">📨 Contact</h2>
         <div class="contact__container bd-grid">
           <div class="contact__email-container">
@@ -304,5 +318,103 @@
 
     <!-- ===== MAIN JS ===== -->
     <script src="assets/js/main.js"></script>
+  
+    <!-- Inline enhancements: animations, tilt, theme switch -->
+    <script id="inline-enhancements">
+      (function(){
+        // Respect reduced motion
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // Scroll reveal via IntersectionObserver
+        const revealEls = document.querySelectorAll('.reveal');
+        if (!prefersReduced && 'IntersectionObserver' in window) {
+          const io = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                io.unobserve(entry.target);
+              }
+            })
+          }, { threshold: 0.15 });
+          revealEls.forEach(el => io.observe(el));
+        } else {
+          revealEls.forEach(el => el.classList.add('in-view'));
+        }
+
+        // Magnetic / tilt effect for project cards
+        const cards = document.querySelectorAll('.project-card');
+        cards.forEach((card) => {
+          const rect = () => card.getBoundingClientRect();
+          const onMove = (e) => {
+            if (prefersReduced) return;
+            const r = rect();
+            const x = e.clientX - r.left;
+            const y = e.clientY - r.top;
+            const rx = ((y - r.height/2) / r.height) * -8;
+            const ry = ((x - r.width/2) / r.width) * 8;
+            card.style.transform = `translateY(-4px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+          };
+          const reset = () => {
+            card.style.transform = '';
+          };
+          card.addEventListener('mousemove', onMove);
+          card.addEventListener('mouseleave', reset);
+          card.addEventListener('blur', reset, true);
+        });
+
+        // Button ripple on click
+        document.body.addEventListener('click', function(e){
+          const btn = e.target.closest('.button, .btn, .footer__button, .contact__email');
+          if (!btn) return;
+          const circle = document.createElement('span');
+          circle.className = 'ripple';
+          const rect = btn.getBoundingClientRect();
+          circle.style.left = (e.clientX - rect.left) + 'px';
+          circle.style.top = (e.clientY - rect.top) + 'px';
+          btn.appendChild(circle);
+          setTimeout(() => circle.remove(), 600);
+        }, { passive: true });
+
+        // Theme switcher
+        const root = document.documentElement;
+        const toggle = document.getElementById('theme-toggle');
+        const panel = document.getElementById('theme-panel');
+        const KEY = 'rr-theme';
+        const setTheme = (name) => {
+          root.setAttribute('data-theme', name);
+          try { localStorage.setItem(KEY, name); } catch {}
+          panel.setAttribute('aria-hidden', 'true');
+          panel.classList.remove('open');
+        };
+        // Load saved
+        try {
+          const saved = localStorage.getItem(KEY);
+          if (saved) root.setAttribute('data-theme', saved);
+        } catch {}
+
+        // Toggle panel
+        toggle && toggle.addEventListener('click', () => {
+          const open = panel.classList.toggle('open');
+          panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+        });
+
+        panel && panel.addEventListener('click', (e) => {
+          const btn = e.target.closest('.theme__option');
+          if (!btn) return;
+          setTheme(btn.dataset.theme);
+        });
+
+        // Close panel on outside click
+        document.addEventListener('click', (e) => {
+          if (!panel) return;
+          if (!panel.contains(e.target) && e.target !== toggle && !toggle.contains(e.target)) {
+            panel.classList.remove('open');
+            panel.setAttribute('aria-hidden', 'true');
+          }
+        });
+      })();
+    </script>
   </body>
+</html>
+        
 </html>
