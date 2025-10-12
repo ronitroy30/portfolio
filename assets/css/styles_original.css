@@ -53,7 +53,20 @@ img{max-width:100%;display:block;height:auto}
 .home__title{font-size:3rem;line-height:1.1;margin-bottom:1.25rem}
 .home__title-color{color:var(--first-color)}
 .home__cta{display:flex;gap:.75rem;flex-wrap:wrap}
-.home__social {display: flex;justify-content: center; align-items: center;flex-direction: row; gap: 1rem; margin-top: 1rem;}
+/*.home__buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}*/
+.home__social {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
 .home__social-icon {
   font-size: 1.8rem;
   color: var(--second-color);
