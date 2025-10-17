@@ -13,6 +13,7 @@
     <title>Ronit's Portfolio</title>
   </head>
   <body>
+  <div id="scroll-progress" aria-hidden="true"></div>
     <!-- ===== HEADER ===== -->
     <header class="l-header" role="banner">
       <nav class="nav bd-grid" aria-label="Primary">
@@ -41,6 +42,7 @@
     <main class="l-main">
       <!-- ===== HOME ===== -->
       <section class="home bd-grid" id="home">
+  <canvas id="particles-canvas" aria-hidden="true"></canvas>
         <div class="home__data">
           <h1 class="home__title">
             Hi,<br />I'm <span class="home__title-color">Ronit Roy</span><br />
@@ -60,7 +62,7 @@
       </div>
 
 
-        <div class="home__img" aria-hidden="true">
+        <div class="home__img" data-parallax aria-hidden="true">
           <svg class="home__blob" viewBox="0 0 479 467" xmlns="http://www.w3.org/2000/svg">
             <mask id="mask0" mask-type="alpha">
               <path
@@ -305,24 +307,8 @@
     <!-- ===== MAIN JS ===== -->
     <script src="assets/js/main.js"></script>
   
-<script id="reveal-fallback">
-(function(){
-  // only run if enhancements are missing
-  if (window.__hasEnhancements) return;
-  document.addEventListener('DOMContentLoaded', function(){
-    try{
-      var els = document.querySelectorAll('.reveal');
-      for (var i=0;i<els.length;i++){ els[i].classList.add('in-view'); }
-    }catch(e){}
-  });
-})();
-</script>
-
 <script id="inline-enhancements">
 (function(){
-  // flag so our fallback (if present) does nothing
-  window.__hasEnhancements = true;
-
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Scroll progress
@@ -337,23 +323,9 @@
   window.addEventListener('scroll', onScroll, {passive:true});
   onScroll();
 
-  // IntersectionObserver reveal
-  (function(){
-    const els = document.querySelectorAll('.reveal');
-    if (!els.length) return;
-    if (prefersReduced){ els.forEach(e=>e.classList.add('in-view')); return; }
-    const io = new IntersectionObserver(entries=>{
-      entries.forEach(en=>{
-        if(en.isIntersecting){ en.target.classList.add('in-view'); io.unobserve(en.target); }
-      });
-    }, {threshold:.15});
-    els.forEach(e=>io.observe(e));
-  })();
-
-  // Typewriter rotate (if #typewriter exists)
-  (function(){
-    const tw = document.getElementById('typewriter');
-    if(!tw) return;
+  // Typewriter
+  const tw = document.getElementById('typewriter');
+  if (tw){
     const phrases = [
       (tw.textContent || "").trim() || "Data Engineer",
       "Machine Learning Engineer",
@@ -370,9 +342,9 @@
       if (pos>=t.length){ dir=-1; hold=18; }
       if (pos<=0){ dir=1; i=(i+1)%phrases.length; hold=8; }
     }, 60);
-  })();
+  }
 
-  // Particles behind hero
+  // Particles
   (function(){
     const c = document.getElementById('particles-canvas');
     if (!c) return;
@@ -407,7 +379,18 @@
     window.addEventListener('resize', ()=>{ resize(); init(); });
   })();
 
-  // Parallax on elements tagged with [data-parallax]
+  // Reveal
+  (function(){
+    const els = document.querySelectorAll('.reveal');
+    if (!els.length) return;
+    if (prefersReduced){ els.forEach(e=>e.classList.add('in-view')); return; }
+    const io = new IntersectionObserver(entries=>{
+      entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in-view'); io.unobserve(en.target);} });
+    }, {threshold:.15});
+    els.forEach(e=>io.observe(e));
+  })();
+
+  // Parallax
   (function(){
     const els = document.querySelectorAll('[data-parallax]');
     if (!els.length || prefersReduced) return;
@@ -417,9 +400,7 @@
       els.forEach(el=>{ el.style.transform = `translate3d(${dx*8}px, ${dy*8}px, 0)`; });
     });
   })();
-})();
-</script>
-
+})();</script>
 </body>
         
 </html>
