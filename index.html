@@ -13,7 +13,6 @@
     <title>Ronit's Portfolio</title>
   </head>
   <body>
-  <div id="scroll-progress" aria-hidden="true"></div>
     <!-- ===== HEADER ===== -->
     <header class="l-header" role="banner">
       <nav class="nav bd-grid" aria-label="Primary">
@@ -42,7 +41,6 @@
     <main class="l-main">
       <!-- ===== HOME ===== -->
       <section class="home bd-grid" id="home">
-  <canvas id="particles-canvas" aria-hidden="true"></canvas>
         <div class="home__data">
           <h1 class="home__title">
             Hi,<br />I'm <span class="home__title-color">Ronit Roy</span><br />
@@ -62,7 +60,7 @@
       </div>
 
 
-        <div class="home__img" data-parallax aria-hidden="true">
+        <div class="home__img" aria-hidden="true">
           <svg class="home__blob" viewBox="0 0 479 467" xmlns="http://www.w3.org/2000/svg">
             <mask id="mask0" mask-type="alpha">
               <path
@@ -273,13 +271,20 @@
       </section>
 
       <!-- ===== CONTACT ===== -->
-
-<section class="contact section reveal" id="contact">
-  <h2 class="section-title">Contact</h2>
-  <p class="contact__note">You can reach me using the contact information provided above.</p>
-</section>
-
-</main>
+      <section class="contact section reveal" id="contact">
+        <h2 class="section-title">📨 Contact</h2>
+        <div class="contact__container bd-grid">
+          <div class="contact__email-container">
+            <p class="contact__invitation">Feel free to reach out:</p>
+            <a href="mailto:ronitr300701@gmail.com" class="contact__email">
+              <i class="bx bx-envelope contact__icon" aria-hidden="true"></i>
+              ronitr300701@gmail.com
+            </a>
+            <p class="contact__response-time">I typically respond within 24 hours.</p>
+          </div>
+        </div>
+      </section>
+    </main>
 
     <!-- ===== FOOTER ===== -->
     <footer class="footer" role="contentinfo">
@@ -299,101 +304,5 @@
 
     <!-- ===== MAIN JS ===== -->
     <script src="assets/js/main.js"></script>
-  
-<script id="inline-enhancements">
-(function(){
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // Scroll progress
-  const bar = document.getElementById('scroll-progress');
-  const onScroll = () => {
-    if (!bar) return;
-    const st = document.documentElement.scrollTop || document.body.scrollTop;
-    const dh = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const p = dh ? st/dh : 0;
-    bar.style.transform = `scaleX(${p})`;
-  };
-  window.addEventListener('scroll', onScroll, {passive:true});
-  onScroll();
-
-  // Typewriter
-  const tw = document.getElementById('typewriter');
-  if (tw){
-    const phrases = [
-      (tw.textContent || "").trim() || "Data Engineer",
-      "Machine Learning Engineer",
-      "ETL & Cloud (AWS)",
-      "Analytics & Visualization"
-    ];
-    let i=0, pos=0, dir=1, hold=0;
-    setInterval(()=>{
-      if (prefersReduced){ tw.textContent = phrases[i]; return; }
-      if (hold>0){ hold--; return; }
-      const t = phrases[i];
-      pos += dir;
-      tw.textContent = t.slice(0,pos);
-      if (pos>=t.length){ dir=-1; hold=18; }
-      if (pos<=0){ dir=1; i=(i+1)%phrases.length; hold=8; }
-    }, 60);
-  }
-
-  // Particles
-  (function(){
-    const c = document.getElementById('particles-canvas');
-    if (!c) return;
-    const ctx = c.getContext('2d');
-    let w=0,h=0,dpr=Math.max(1, window.devicePixelRatio||1);
-    let P=[], N=prefersReduced?16:60;
-
-    function resize(){
-      const r = c.parentElement.getBoundingClientRect();
-      w=r.width; h=r.height;
-      c.width = Math.floor(w*dpr); c.height = Math.floor(h*dpr);
-      c.style.width=w+'px'; c.style.height=h+'px';
-      ctx.setTransform(dpr,0,0,dpr,0,0);
-    }
-    function init(){
-      P=[];
-      for(let i=0;i<N;i++) P.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6,r:Math.random()*2+.6});
-    }
-    function color(){ return getComputedStyle(document.documentElement).getPropertyValue('--first-color').trim() || '#4f46e5'; }
-    function step(){
-      ctx.clearRect(0,0,w,h);
-      P.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>w)p.vx*=-1; if(p.y<0||p.y>h)p.vy*=-1; });
-      for(let i=0;i<P.length;i++) for(let j=i+1;j<P.length;j++){
-        const a=P[i],b=P[j],dx=a.x-b.x,dy=a.y-b.y,dist=Math.hypot(dx,dy);
-        if(dist<120){ ctx.globalAlpha=1-(dist/120); ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.strokeStyle=color(); ctx.lineWidth=1; ctx.stroke(); }
-      }
-      ctx.globalAlpha=1; ctx.fillStyle=color();
-      P.forEach(p=>{ ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); });
-      requestAnimationFrame(step);
-    }
-    resize(); init(); step();
-    window.addEventListener('resize', ()=>{ resize(); init(); });
-  })();
-
-  // Reveal
-  (function(){
-    const els = document.querySelectorAll('.reveal');
-    if (!els.length) return;
-    if (prefersReduced){ els.forEach(e=>e.classList.add('in-view')); return; }
-    const io = new IntersectionObserver(entries=>{
-      entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in-view'); io.unobserve(en.target);} });
-    }, {threshold:.15});
-    els.forEach(e=>io.observe(e));
-  })();
-
-  // Parallax
-  (function(){
-    const els = document.querySelectorAll('[data-parallax]');
-    if (!els.length || prefersReduced) return;
-    window.addEventListener('mousemove', e=>{
-      const cx=innerWidth/2, cy=innerHeight/2;
-      const dx=(e.clientX-cx)/cx, dy=(e.clientY-cy)/cy;
-      els.forEach(el=>{ el.style.transform = `translate3d(${dx*8}px, ${dy*8}px, 0)`; });
-    });
-  })();
-})();</script>
-</body>
-        
+  </body>
 </html>
