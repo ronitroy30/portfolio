@@ -138,68 +138,11 @@ img{max-width:100%;display:block;height:auto}
 }
 
 
-/* === Cohesive Light Background + Section Animations === */
-
-/* Soft, not-too-dark site background */
-:root{
-  --bg:#f8fafc;            /* gentle light slate */
-  --section-tint: color-mix(in oklab, var(--first-color), white 96%);
-}
-body{ background: var(--bg); }
-
-/* Alternate subtle tints for sections (keeps things airy) */
-.section{ position: relative; isolation: isolate; }
-.section:nth-of-type(even){ background: linear-gradient(180deg, transparent 0, var(--section-tint) 8%, var(--section-tint) 92%, transparent 100%); }
-.section + .section{ margin-top: 0.25rem; } /* reduce harsh seams */
-
-/* Directional slide animations layered on top of reveal */
-.reveal.anim-left, .reveal .anim-left{ transform: translateX(-16px); opacity: 0; }
-.reveal.anim-right, .reveal .anim-right{ transform: translateX(16px); opacity: 0; }
-.reveal.anim-up, .reveal .anim-up{ transform: translateY(16px); opacity: 0; }
-
-.reveal.in-view.anim-left, .reveal.in-view .anim-left,
-.reveal.in-view.anim-right, .reveal.in-view .anim-right,
-.reveal.in-view.anim-up, .reveal.in-view .anim-up{
-  transform: none; opacity: 1;
-  transition: transform .6s cubic-bezier(.2,.6,.2,1), opacity .6s ease;
-}
-
-/* Stagger already supported via [data-stagger], add slight delay scaling */
-.reveal.in-view [data-stagger]{ will-change: transform, opacity; }
-.reveal.in-view [data-stagger]:nth-child(1){ transition-delay:.05s }
-.reveal.in-view [data-stagger]:nth-child(2){ transition-delay:.10s }
-.reveal.in-view [data-stagger]:nth-child(3){ transition-delay:.15s }
-.reveal.in-view [data-stagger]:nth-child(4){ transition-delay:.20s }
-.reveal.in-view [data-stagger]:nth-child(5){ transition-delay:.25s }
-.reveal.in-view [data-stagger]:nth-child(6){ transition-delay:.30s }
-.reveal.in-view [data-stagger]:nth-child(7){ transition-delay:.35s }
-.reveal.in-view [data-stagger]:nth-child(8){ transition-delay:.40s }
-
-/* Skill bars baseline look if template uses .skills__bar/percentage */
-.skills__bar, .skills__percentage, [role="progressbar"]{
-  background: color-mix(in oklab, var(--first-color), white 86%);
-  border-radius: 999px;
-  overflow: hidden;
-}
-.skills__bar::after, .skills__percentage::after, [role="progressbar"]::after{
-  content:""; display:block; height: 8px;
-  background: linear-gradient(90deg, var(--first-color), var(--accent-1));
-  border-radius: inherit;
-  width: 100%;
-}
-
-/* Prevent motion overwhelm */
-@media (prefers-reduced-motion: reduce){
-  .reveal, .reveal *{ transition: none !important; transform: none !important; }
-}
-
-
-/* Reveal transitions */
-.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease, transform .6s ease;}
-.reveal.in-view{opacity:1;transform:none;}
-/* Progress bar & particles (if not already present) */
+/* === Animation Pack (minimal CSS) === */
 #scroll-progress{position:fixed;left:0;top:0;height:4px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--first-color),var(--accent-1));z-index:9999;}
 #particles-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.6;}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease, transform .6s ease;}
+.reveal.in-view{opacity:1;transform:none;}
 @media (prefers-reduced-motion: reduce){
   *{animation:none!important;transition:none!important}
   #particles-canvas{display:none}
