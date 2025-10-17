@@ -47,6 +47,7 @@
           <h1 class="home__title">
             Hi,<br />I'm <span class="home__title-color">Ronit Roy</span><br />
           </h1>
+          <h3 class="home__subtitle"><span id="typewriter">Data Engineer</span></h3>
           <div class="home__cta">
             <a href="assets/img/Data_engineer.pdf" class="button">Download CV</a>
             <a href="#projects" class="button button--ghost">See Projects</a>
@@ -400,6 +401,52 @@
       els.forEach(el=>{ el.style.transform = `translate3d(${dx*8}px, ${dy*8}px, 0)`; });
     });
   })();
+})();
+/*+++ EXTRA SECTION ANIMS +++*/
+(function(){
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Auto-stagger first 8 child elements of any .reveal container
+  document.querySelectorAll('.reveal').forEach(cont => {
+    const kids = Array.from(cont.children).filter(n => n.nodeType === 1).slice(0,8);
+    kids.forEach(k => k.setAttribute('data-stagger',''));
+  });
+
+  // Directional hints for common blocks
+  const add = (sel, cls) => document.querySelectorAll(sel).forEach(el => el.classList.add(cls));
+  add('.about .about__container', 'anim-right');
+  add('.experience .bd-grid, .education .bd-grid', 'anim-up');
+  add('.projects .projects__grid', 'anim-up');
+  add('.contact .contact__container', 'anim-right');
+
+  // Tilt effect on project cards
+  const cards = document.querySelectorAll('.project-card');
+  cards.forEach(card => {
+    const reset = () => { card.style.transform = ''; };
+    card.addEventListener('mousemove', (e) => {
+      if (prefersReduced) return;
+      const r = card.getBoundingClientRect();
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      const rx = ((y - r.height/2) / r.height) * -6;
+      const ry = ((x - r.width/2) / r.width) * 6;
+      card.style.transform = `translateY(-4px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+    });
+    card.addEventListener('mouseleave', reset);
+  });
+
+  // Pop-in animation for skill chips on reveal
+  const io = ('IntersectionObserver' in window) ? new IntersectionObserver((entries)=>{
+    entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      en.target.classList.add('chips-in');
+      io.unobserve(en.target);
+    });
+  }, { threshold: .25 }) : null;
+
+  document.querySelectorAll('.chiplist').forEach(list => {
+    if (io) io.observe(list);
+    else list.classList.add('chips-in');
+  });
 })();</script>
 </body>
         
