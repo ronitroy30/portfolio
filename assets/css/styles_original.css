@@ -190,3 +190,17 @@ body{ background: var(--bg); }
 @media (prefers-reduced-motion: reduce){
   .reveal, .reveal *{ transition: none !important; transform: none !important; animation: none !important; }
 }
+
+
+/* === Light Background & Section Animations === */
+:root{ --bg: #f8fafc; --section-tint: color-mix(in oklab, var(--first-color), white 96%); }
+body{ background: var(--bg); }
+.section{ position: relative; isolation: isolate; }
+.section:nth-of-type(even){
+  background: linear-gradient(180deg, transparent 0, var(--section-tint) 8%, var(--section-tint) 92%, transparent 100%);
+}
+.reveal{ opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.in-view{ opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce){
+  .reveal, .reveal *{ transition: none !important; transform: none !important; }
+}
