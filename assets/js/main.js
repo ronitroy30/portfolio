@@ -119,3 +119,20 @@ quickViews.forEach(btn => {
     modal.classList.add('open');
   });
 });
+
+
+/* ===== Enhancements (moved from inline) ===== */
+(function(){
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // reveal on scroll
+  const els = document.querySelectorAll('.reveal');
+  if (els.length){
+    if (prefersReduced){ els.forEach(e=>e.classList.add('in-view')); }
+    else {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(en => { if (en.isIntersecting){ en.target.classList.add('in-view'); io.unobserve(en.target); } });
+      }, { threshold: .15 });
+      els.forEach(e => io.observe(e));
+    }
+  }
+})();
