@@ -192,3 +192,15 @@ body{ background: var(--bg); }
 @media (prefers-reduced-motion: reduce){
   .reveal, .reveal *{ transition: none !important; transform: none !important; }
 }
+
+
+/* Reveal transitions */
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease, transform .6s ease;}
+.reveal.in-view{opacity:1;transform:none;}
+/* Progress bar & particles (if not already present) */
+#scroll-progress{position:fixed;left:0;top:0;height:4px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--first-color),var(--accent-1));z-index:9999;}
+#particles-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.6;}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition:none!important}
+  #particles-canvas{display:none}
+}
