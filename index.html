@@ -13,6 +13,32 @@
     <title>Ronit's Portfolio</title>
   </head>
   <body>
+  <!-- Gamified UI: particles + HUD -->
+  <canvas id="particle-bg" aria-hidden="true"></canvas>
+  <div id="game-hud" class="game-hud" aria-hidden="true">
+    <div class="hud-left">
+      <div class="xp-wrap" aria-label="Experience">
+        <span id="level-label" class="level">Lv 1</span>
+        <div class="xp-bar"><div id="xp-bar" class="xp-bar__fill" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="hud-right">
+      <div class="score" title="Score: click links, explore!">
+        <span class="coin">🪙</span>
+        <span id="score" class="score__value">0</span>
+      </div>
+      <button id="quest-toggle" class="quest-toggle" aria-expanded="false" aria-controls="quest-drawer" title="Quest Log">🎮</button>
+    </div>
+  </div>
+  <aside id="quest-drawer" class="quest-drawer" aria-hidden="true">
+    <h3>Quest Log</h3>
+    <ul>
+      <li data-quest="intro">Meet the hero on the Home screen</li>
+      <li data-quest="projects">Inspect at least 3 projects</li>
+      <li data-quest="skills">Discover the skill tree</li>
+      <li data-quest="contact">Send a message to complete the run</li>
+    </ul>
+  </aside>
     <!-- ===== HEADER ===== -->
     <header class="l-header" role="banner">
       <nav class="nav bd-grid" aria-label="Primary">
@@ -42,12 +68,12 @@
       <!-- ===== HOME ===== -->
       <section class="home bd-grid" id="home">
         <div class="home__data">
-          <h1 class="home__title">
+          <h1 class="home__title"><span id="typewriter" class="typewriter">
             Hi,<br />I'm <span class="home__title-color">Ronit Roy</span><br />
-          </h1>
+          </span></h1>
           <div class="home__cta">
             <a href="assets/img/Data_engineer.pdf" class="button">Download CV</a>
-            <a href="#projects" class="button button--ghost">See Projects</a>
+            <a href="#projects" class="button button--ghost contact-trigger">See Projects</a>
           </div>
            <div class="home__social">
           <a href="https://www.linkedin.com/in/ronit-roy-1602681b2/" class="home__social-icon" aria-label="LinkedIn">
@@ -304,5 +330,193 @@
 
     <!-- ===== MAIN JS ===== -->
     <script src="assets/js/main.js"></script>
-  </body>
+  
+  <!-- Gamified interactions -->
+  <script id="gamify">
+  (function(){
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Score & Level
+    const scoreEl = document.getElementById('score');
+    const xpEl = document.getElementById('xp-bar');
+    const lvlEl = document.getElementById('level-label');
+    const KEY_SCORE = 'rr-score'; const KEY_XP = 'rr-xp';
+    let score = 0; let xp = 0;
+
+    try { score = parseInt(localStorage.getItem(KEY_SCORE) || '0', 10) || 0; } catch {}
+    try { xp = parseFloat(localStorage.getItem(KEY_XP) || '0') || 0; } catch {}
+    const setScore = (v)=>{ score = Math.max(0, v|0); scoreEl && (scoreEl.textContent = String(score)); try{localStorage.setItem(KEY_SCORE, String(score));}catch{} };
+    const setXP = (p)=>{
+      xp = Math.min(100, Math.max(0, p));
+      if (xpEl) xpEl.style.width = xp + '%';
+      const lvl = 1 + Math.floor(xp/25);
+      if (lvlEl) lvlEl.textContent = 'Lv ' + lvl;
+      try{ localStorage.setItem(KEY_XP, String(xp)); }catch{}
+    };
+    setScore(score); setXP(xp);
+
+    // Particle background
+    const canvas = document.getElementById('particle-bg');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      let W=0,H=0; let particles=[];
+      const init = () => {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = Math.max(document.body.scrollHeight, window.innerHeight);
+        particles = Array.from({length: Math.min(120, Math.floor(W*H/16000))}).map(()=> ({
+          x: Math.random()*W, y: Math.random()*H, vx: (Math.random()-.5)*0.4, vy: (Math.random()-.5)*0.4, r: Math.random()*1.6+0.4
+        }));
+      };
+      const step = () => {
+        if (prefersReduced) return;
+        ctx.clearRect(0,0,W,H);
+        for(const p of particles){
+          p.x+=p.vx; p.y+=p.vy;
+          if(p.x<0||p.x>W) p.vx*=-1;
+          if(p.y<0||p.y>H) p.vy*=-1;
+          ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle='rgba(125, 125, 255, .3)'; ctx.fill();
+        }
+        for(let i=0;i<particles.length;i++){
+          for(let j=i+1;j<i+35 && j<particles.length;j++){
+            const a=particles[i], b=particles[j];
+            const dx=a.x-b.x, dy=a.y-b.y; const d=dx*dx+dy*dy;
+            if(d<9000){ ctx.strokeStyle='rgba(125,125,255,.08)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); }
+          }
+        }
+        requestAnimationFrame(step);
+      };
+      init(); requestAnimationFrame(step);
+      window.addEventListener('resize', init);
+    }
+
+    // Typewriter effect
+    const t = document.getElementById('typewriter');
+    if (t && !prefersReduced) {
+      const full = t.textContent.trim();
+      let i=0;
+      const write = () => { t.textContent = full.slice(0, i++); if (i<=full.length) setTimeout(write, 35); };
+      t.textContent=''; write();
+    }
+
+    // Scroll XP progress
+    const sections = Array.from(document.querySelectorAll('section[id]'));
+    if ('IntersectionObserver' in window){
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{
+          if(e.isIntersecting){
+            setXP(Math.min(100, xp + 7));
+            unlockAchievement(e.target.id);
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.3 });
+      sections.forEach(s=>io.observe(s));
+    }
+
+    // Score on link/button interaction
+    document.addEventListener('click', (e)=>{
+      const link = e.target.closest('a,button');
+      if (!link) return;
+      setScore(score+1);
+    }, { passive:true });
+
+    // Confetti on contact / CTA
+    const confetti = (x,y) => {
+      if (prefersReduced) return;
+      const n=24;
+      for(let i=0;i<n;i++){
+        const el = document.createElement('i');
+        el.className='confetti';
+        const ang = (Math.PI*2) * (i/n);
+        const spd = 4 + Math.random()*3;
+        el.style.setProperty('--dx', Math.cos(ang)*spd);
+        el.style.setProperty('--dy', Math.sin(ang)*spd);
+        el.style.left = x+'px'; el.style.top = y+'px';
+        document.body.appendChild(el);
+        setTimeout(()=> el.remove(), 1200);
+      }
+    };
+    document.addEventListener('click', (e)=>{
+      const btn = e.target.closest('.contact-trigger, [href*="#contact"], .button[href^="mailto:"], .button[href^="https://linkedin"]');
+      if (!btn) return;
+      const r = btn.getBoundingClientRect();
+      confetti(r.left + r.width/2, r.top + window.scrollY + r.height/2);
+    }, { passive:true });
+
+    // Cursor sparkles
+    if (!prefersReduced){
+      let last=0;
+      window.addEventListener('mousemove', (e)=>{
+        const now = Date.now();
+        if (now-last<40) return; last=now;
+        const s = document.createElement('span');
+        s.className='sparkle';
+        s.style.left = e.pageX+'px'; s.style.top = e.pageY+'px';
+        document.body.appendChild(s);
+        setTimeout(()=> s.remove(), 600);
+      }, { passive:true });
+    }
+
+    // Quest drawer
+    const drawer = document.getElementById('quest-drawer');
+    const qbtn = document.getElementById('quest-toggle');
+    const toggleDrawer = () => {
+      const open = drawer.classList.toggle('open');
+      qbtn.setAttribute('aria-expanded', String(open));
+      drawer.setAttribute('aria-hidden', String(!open));
+    };
+    qbtn && qbtn.addEventListener('click', toggleDrawer);
+
+    // Achievements
+    const achEl = document.getElementById('achievements');
+    const badges = new Set();
+    const pushBadge = (label) => {
+      if (badges.has(label) || !achEl) return;
+      badges.add(label);
+      const b = document.createElement('span');
+      b.className='badge'; b.textContent = label;
+      achEl.appendChild(b);
+      setTimeout(() => b.classList.add('show'), 30);
+      setScore(score+3);
+    };
+    const unlockAchievement = (sectionId) => {
+      const map = {
+        'projects':'Project Explorer',
+        'skills':'Skill Tree Unlocked',
+        'education':'Scholar',
+        'experience':'Trailblazer',
+        'contact':'Connector',
+        'about':'Lore Reader',
+      };
+      if (map[sectionId]) pushBadge(map[sectionId]);
+    };
+    pushBadge('Welcome Adventurer');
+
+    // Konami code -> theme + confetti
+    const konami = [38,38,40,40,37,39,37,39,66,65];
+    const keys = [];
+    window.addEventListener('keydown', (e)=>{
+      keys.push(e.keyCode); if (keys.length>konami.length) keys.shift();
+      if (konami.every((k,i)=>k===keys[i])){
+        document.documentElement.setAttribute('data-theme','sunset');
+        try{ localStorage.setItem('rr-theme','sunset'); }catch{}
+        const y = window.scrollY + 120;
+        const x = window.innerWidth/2;
+        setTimeout(()=>{
+          const evt = new MouseEvent('click', {clientX:x, clientY:y});
+          document.dispatchEvent(evt);
+        }, 10);
+      }
+    });
+
+    // XP from scroll percentage as fallback
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const p = max>0 ? (window.scrollY/max)*100 : 0;
+      setXP(Math.max(xp, p));
+    };
+    window.addEventListener('scroll', onScroll, { passive:true });
+  })();
+  </script>
+
+</body>
 </html>
