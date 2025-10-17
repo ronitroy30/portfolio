@@ -304,5 +304,15 @@
 
     <!-- ===== MAIN JS ===== -->
     <script src="assets/js/main.js"></script>
-  </body>
+  
+<script id="reveal-fallback">
+document.addEventListener('DOMContentLoaded', function(){
+  try{
+    var els = document.querySelectorAll('.reveal');
+    for (var i=0;i<els.length;i++){ els[i].classList.add('in-view'); }
+  }catch(e){}
+});
+</script>
+</body>
+        
 </html>
