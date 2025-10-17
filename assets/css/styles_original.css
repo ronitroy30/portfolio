@@ -138,115 +138,57 @@ img{max-width:100%;display:block;height:auto}
 }
 
 
-/* === Animation Pack (minimal CSS) === */
-#scroll-progress{position:fixed;left:0;top:0;height:4px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--first-color),var(--accent-1));z-index:9999;}
-#particles-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.6;}
-.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease, transform .6s ease;}
-.reveal.in-view{opacity:1;transform:none;}
-@media (prefers-reduced-motion: reduce){
-  *{animation:none!important;transition:none!important}
-  #particles-canvas{display:none}
-}
+/* === Cohesive Light Background + Section Animations === */
 
-
-/* ===== Cohesive Light Background & Section Animations ===== */
-
-/* Calm, light background that matches all themes */
+/* Soft, not-too-dark site background */
 :root{
-  --page-bg: #f6f7ff; /* light indigo-tinted white */
-  --section-bg: #ffffff;
-  --section-alt: #f9faff; /* slightly tinted alternate band */
+  --bg:#f8fafc;            /* gentle light slate */
+  --section-tint: color-mix(in oklab, var(--first-color), white 96%);
+}
+body{ background: var(--bg); }
+
+/* Alternate subtle tints for sections (keeps things airy) */
+.section{ position: relative; isolation: isolate; }
+.section:nth-of-type(even){ background: linear-gradient(180deg, transparent 0, var(--section-tint) 8%, var(--section-tint) 92%, transparent 100%); }
+.section + .section{ margin-top: 0.25rem; } /* reduce harsh seams */
+
+/* Directional slide animations layered on top of reveal */
+.reveal.anim-left, .reveal .anim-left{ transform: translateX(-16px); opacity: 0; }
+.reveal.anim-right, .reveal .anim-right{ transform: translateX(16px); opacity: 0; }
+.reveal.anim-up, .reveal .anim-up{ transform: translateY(16px); opacity: 0; }
+
+.reveal.in-view.anim-left, .reveal.in-view .anim-left,
+.reveal.in-view.anim-right, .reveal.in-view .anim-right,
+.reveal.in-view.anim-up, .reveal.in-view .anim-up{
+  transform: none; opacity: 1;
+  transition: transform .6s cubic-bezier(.2,.6,.2,1), opacity .6s ease;
 }
 
-/* Apply background */
-body{
-  background: radial-gradient(1000px 600px at 0% -10%, color-mix(in oklab, var(--first-color), white 96%), transparent 60%),
-              radial-gradient(800px 500px at 100% 110%, color-mix(in oklab, var(--accent-1, var(--first-color)), white 96%), transparent 60%),
-              var(--page-bg);
+/* Stagger already supported via [data-stagger], add slight delay scaling */
+.reveal.in-view [data-stagger]{ will-change: transform, opacity; }
+.reveal.in-view [data-stagger]:nth-child(1){ transition-delay:.05s }
+.reveal.in-view [data-stagger]:nth-child(2){ transition-delay:.10s }
+.reveal.in-view [data-stagger]:nth-child(3){ transition-delay:.15s }
+.reveal.in-view [data-stagger]:nth-child(4){ transition-delay:.20s }
+.reveal.in-view [data-stagger]:nth-child(5){ transition-delay:.25s }
+.reveal.in-view [data-stagger]:nth-child(6){ transition-delay:.30s }
+.reveal.in-view [data-stagger]:nth-child(7){ transition-delay:.35s }
+.reveal.in-view [data-stagger]:nth-child(8){ transition-delay:.40s }
+
+/* Skill bars baseline look if template uses .skills__bar/percentage */
+.skills__bar, .skills__percentage, [role="progressbar"]{
+  background: color-mix(in oklab, var(--first-color), white 86%);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.skills__bar::after, .skills__percentage::after, [role="progressbar"]::after{
+  content:""; display:block; height: 8px;
+  background: linear-gradient(90deg, var(--first-color), var(--accent-1));
+  border-radius: inherit;
+  width: 100%;
 }
 
-/* Sections get soft cards against the page bg */
-.section{
-  background: var(--section-bg);
-  border-radius: 18px;
-  box-shadow: 0 8px 30px rgba(0,0,0,.04);
-  padding-block: clamp(2rem, 4vw, 3.5rem);
-  padding-inline: clamp(1rem, 3vw, 2rem);
-  margin-block: clamp(1rem, 3vw, 1.75rem);
-}
-
-/* Alternate sections get a very subtle tint */
-.section:nth-of-type(even){
-  background: linear-gradient(180deg, var(--section-alt), #fff 70%);
-}
-
-/* Stronger reveals: stagger immediate children of any .reveal section */
-.reveal > *{
-  opacity: 0;
-  transform: translateY(14px);
-  transition: opacity .6s ease, transform .6s ease;
-}
-.reveal.in-view > *{
-  opacity: 1;
-  transform: none;
-}
-.reveal.in-view > *:nth-child(1){ transition-delay: .05s }
-.reveal.in-view > *:nth-child(2){ transition-delay: .10s }
-.reveal.in-view > *:nth-child(3){ transition-delay: .15s }
-.reveal.in-view > *:nth-child(4){ transition-delay: .20s }
-.reveal.in-view > *:nth-child(5){ transition-delay: .25s }
-.reveal.in-view > *:nth-child(6){ transition-delay: .30s }
-
-/* Project/item lift + soft glow on hover anywhere in sections */
-.section a, .section .card, .section .project, .section .project-card, .section .experience__content, .section .education__content{
-  transition: transform .25s ease, box-shadow .25s ease;
-  will-change: transform;
-}
-.section a:hover, .section .card:hover, .section .project:hover, .section .project-card:hover, .section .experience__content:hover, .section .education__content:hover{
-  transform: translateY(-4px);
-  box-shadow: 0 16px 40px rgba(0,0,0,.08);
-}
-
-/* Timeline-style slide-in (left/right) if such items exist */
-.experience .timeline__item:nth-child(odd){ transform: translateX(-14px); opacity: 0; }
-.experience .timeline__item:nth-child(even){ transform: translateX(14px); opacity: 0; }
-.experience.reveal.in-view .timeline__item{ transform: none; opacity: 1; transition: transform .6s ease, opacity .6s ease; }
-.experience.reveal.in-view .timeline__item:nth-child(odd){ transition-delay: .1s }
-.experience.reveal.in-view .timeline__item:nth-child(even){ transition-delay: .2s }
-
-/* Skills bars animation if present (common pattern) */
-.skills .skills__bar, .skills .skills__percentage{
-  transform-origin: 0 50%;
-  transform: scaleX(0);
-  transition: transform .8s ease .15s;
-}
-.skills.reveal.in-view .skills__bar, .skills.reveal.in-view .skills__percentage{
-  transform: scaleX(1);
-}
-
-/* Section headers: underline grow */
-.section-title{
-  position: relative;
-}
-.section-title::after{
-  content: "";
-  position: absolute; left: 0; bottom: -8px;
-  width: 64px; height: 3px;
-  background: linear-gradient(90deg, var(--first-color), var(--accent-1, var(--first-color)));
-  border-radius: 3px;
-  transform-origin: 0 50%;
-  transform: scaleX(.4);
-  transition: transform .6s ease;
-}
-.reveal.in-view .section-title::after{ transform: scaleX(1); }
-
-/* Respect motion settings */
+/* Prevent motion overwhelm */
 @media (prefers-reduced-motion: reduce){
-  .reveal > *,
-  .experience .timeline__item,
-  .skills .skills__bar, .skills .skills__percentage{
-    transition: none !important;
-    transform: none !important;
-    opacity: 1 !important;
-  }
+  .reveal, .reveal *{ transition: none !important; transform: none !important; }
 }
