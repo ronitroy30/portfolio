@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="assets/css/styles_original.css" />
     <title>Ronit's Portfolio</title>
   </head>
-  <body class="page-enter">
+  <body>
   <div id="scroll-progress" aria-hidden="true"></div>
     <!-- ===== HEADER ===== -->
     <header class="l-header" role="banner">
@@ -80,7 +80,7 @@
       </section>
 
       <!-- ===== ABOUT ===== -->
-      <section class="about section" id="about">
+      <section class="about section reveal" id="about">
         <h2 class="section-title">✨ About Me</h2>
         <div class="about__container bd-grid" style="justify-content:center;">
           <div>
@@ -95,7 +95,7 @@
       </section>
 
       <!-- ===== EXPERIENCE ===== -->
-      <section class="experience section" id="experience">
+      <section class="experience section reveal" id="experience">
         <h2 class="section-title">💼 Experience</h2>
         <div class="bd-grid">
           <article class="experience__item">
@@ -134,7 +134,7 @@
       </section>
 
       <!-- ===== PROJECTS (Interactive) ===== -->
-      <section class="projects section" id="projects">
+      <section class="projects section reveal" id="projects">
         <h2 class="section-title">🛠️ Projects</h2>
 
         <!-- Filter toolbar -->
@@ -221,7 +221,7 @@
       </section>
 
       <!-- ===== SKILLS (simple/static, no animations) ===== -->
-      <section class="skills section" id="skills">
+      <section class="skills section reveal" id="skills">
         <h2 class="section-title">💡 Skills</h2>
         <div class="skills__container bd-grid">
           <div class="skills__columns">
@@ -254,7 +254,7 @@
       </section>
 
       <!-- ===== EDUCATION ===== -->
-      <section class="education section" id="education">
+      <section class="education section reveal" id="education">
         <h2 class="section-title">🎓 Education</h2>
         <div class="bd-grid">
           <div class="education__item">
@@ -273,7 +273,7 @@
       </section>
 
       <!-- ===== CONTACT ===== -->
-      <section class="contact section" id="contact">
+      <section class="contact section reveal" id="contact">
         <h2 class="section-title">📨 Contact</h2>
         <div class="contact__container bd-grid">
           <div class="contact__email-container">
@@ -308,8 +308,99 @@
     <script src="assets/js/main.js"></script>
   
 <script id="inline-enhancements">
-  (function(){ /* placeholder */ })();
-</script>
+(function(){
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Scroll progress
+  const bar = document.getElementById('scroll-progress');
+  const onScroll = () => {
+    if (!bar) return;
+    const st = document.documentElement.scrollTop || document.body.scrollTop;
+    const dh = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const p = dh ? st/dh : 0;
+    bar.style.transform = `scaleX(${p})`;
+  };
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // Typewriter
+  const tw = document.getElementById('typewriter');
+  if (tw){
+    const phrases = [
+      (tw.textContent || "").trim() || "Data Engineer",
+      "Machine Learning Engineer",
+      "ETL & Cloud (AWS)",
+      "Analytics & Visualization"
+    ];
+    let i=0, pos=0, dir=1, hold=0;
+    setInterval(()=>{
+      if (prefersReduced){ tw.textContent = phrases[i]; return; }
+      if (hold>0){ hold--; return; }
+      const t = phrases[i];
+      pos += dir;
+      tw.textContent = t.slice(0,pos);
+      if (pos>=t.length){ dir=-1; hold=18; }
+      if (pos<=0){ dir=1; i=(i+1)%phrases.length; hold=8; }
+    }, 60);
+  }
+
+  // Particles
+  (function(){
+    const c = document.getElementById('particles-canvas');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    let w=0,h=0,dpr=Math.max(1, window.devicePixelRatio||1);
+    let P=[], N=prefersReduced?16:60;
+
+    function resize(){
+      const r = c.parentElement.getBoundingClientRect();
+      w=r.width; h=r.height;
+      c.width = Math.floor(w*dpr); c.height = Math.floor(h*dpr);
+      c.style.width=w+'px'; c.style.height=h+'px';
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
+    function init(){
+      P=[];
+      for(let i=0;i<N;i++) P.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6,r:Math.random()*2+.6});
+    }
+    function color(){ return getComputedStyle(document.documentElement).getPropertyValue('--first-color').trim() || '#4f46e5'; }
+    function step(){
+      ctx.clearRect(0,0,w,h);
+      P.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>w)p.vx*=-1; if(p.y<0||p.y>h)p.vy*=-1; });
+      for(let i=0;i<P.length;i++) for(let j=i+1;j<P.length;j++){
+        const a=P[i],b=P[j],dx=a.x-b.x,dy=a.y-b.y,dist=Math.hypot(dx,dy);
+        if(dist<120){ ctx.globalAlpha=1-(dist/120); ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.strokeStyle=color(); ctx.lineWidth=1; ctx.stroke(); }
+      }
+      ctx.globalAlpha=1; ctx.fillStyle=color();
+      P.forEach(p=>{ ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); });
+      requestAnimationFrame(step);
+    }
+    resize(); init(); step();
+    window.addEventListener('resize', ()=>{ resize(); init(); });
+  })();
+
+  // Reveal
+  (function(){
+    const els = document.querySelectorAll('.reveal');
+    if (!els.length) return;
+    if (prefersReduced){ els.forEach(e=>e.classList.add('in-view')); return; }
+    const io = new IntersectionObserver(entries=>{
+      entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in-view'); io.unobserve(en.target);} });
+    }, {threshold:.15});
+    els.forEach(e=>io.observe(e));
+  })();
+
+  // Parallax
+  (function(){
+    const els = document.querySelectorAll('[data-parallax]');
+    if (!els.length || prefersReduced) return;
+    window.addEventListener('mousemove', e=>{
+      const cx=innerWidth/2, cy=innerHeight/2;
+      const dx=(e.clientX-cx)/cx, dy=(e.clientY-cy)/cy;
+      els.forEach(el=>{ el.style.transform = `translate3d(${dx*8}px, ${dy*8}px, 0)`; });
+    });
+  })();
+})();</script>
 </body>
         
 </html>
